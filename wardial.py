@@ -83,7 +83,7 @@ def is_server_at_hostname(hostname):
     '''
     try:
         r = requests.get('http://' + hostname.lower(), timeout=5)
-        if 200 <= r.status_code < 300:
+        if r.status_code < 400:
             return True
     except:
         pass
