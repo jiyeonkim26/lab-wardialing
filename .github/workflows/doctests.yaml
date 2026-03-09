@@ -15,8 +15,7 @@ jobs:
         with:
           python-version: ${{matrix.python}}
       - name: Install dependencies
-        run: pip3 install requests
+        run: pip install requests
       - name: Run tests
         run: |
-          python -m doctest --verbose lab-wardialing/wardial.py
-          python -m doctest --verbose lab-wardialing/tests.py
+          python -m doctest --verbose lab_wardialings/wardial.py
