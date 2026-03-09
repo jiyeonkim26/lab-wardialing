@@ -83,7 +83,7 @@ def is_server_at_hostname(hostname):
     '''
     try:
         url = "http://" + hostname.lower()
-        requests.get(url, timeout=5)
+        r = requests.get(url, timeout=5)
         if r.status_code < 400:
             return True
         else:
