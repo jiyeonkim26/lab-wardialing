@@ -146,7 +146,6 @@ def enumerate_ips(start_ip, n):
     '''
     current = start_ip
     result_ip = [start_ip]
-    print(result_ip)
 
     for i in range(n-1):
         current = increment_ip(current)
