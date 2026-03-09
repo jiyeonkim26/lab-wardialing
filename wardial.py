@@ -81,19 +81,21 @@ def is_server_at_hostname(hostname):
     but it would also make scanning take much longer.
     5 seconds is a reasonable tradeoff between these extremes.
     '''
-    for hostname in is_server_at_hostname:
-        try:
-            r = requests.get('http://' + hostname, timeout=5)
-            if r.status_code >= 100 and r.status_code <= 299:
-                print(True)
-        except requests.exceptions.SSLError:
-            r = requests.get('https://' + hostname, timeout=5)
-            if r.status_code >= 100 and r.status_code <= 299:
-                print(True)
-        except requests.exceptions.ConnectionError:
-            print(False)
-        except requests.exceptions.ConnectTimeout:
-            print(False)
+    try:
+        r = requests.get('http://' + hostname, timeout=5)
+        if r.status_code < 400:
+            return True
+    except requests.exceptions.SSLError:
+        r = requests.get('https://' + hostname, timeout=5)
+        if r.status_code < 400:
+            return True
+    except requests.exceptions.ConnectionError:
+        return False
+    except requests.exceptions.ConnectTimeout:
+        return False
+    except:
+        return False
+    return False
 
 
 def increment_ip(ip):
@@ -117,29 +119,14 @@ def increment_ip(ip):
     >>> increment_ip('255.255.255.255')
     '0.0.0.0'
     '''
-    separator = "."
-
-    if separator in ip:
-        ip_list = [int(i) for i in ip.split(separator)]
-        if ip_list[-1] == 255:
-            ip_list[-1] = 0
-            if ip_list[-2] == 255:
-                ip_list[-2] = 0
-                if ip_list[-3] == 255:
-                    ip_list[-3] = 0
-                    if ip_list[-4] == 255:
-                        ip_list[:] = [0, 0, 0, 0]
-                    else:
-                        ip_list[-4] += 1
-                else:
-                    ip_list[-3] += 1
-            else:
-                ip_list[-2] += 1
+    items = [int(i) for i in ip.split(".")]
+    for i in range(3, -1, -1):
+        if items[i] < 255:
+            items[i] += 1
+            break
         else:
-            ip_list[-1] += 1
-        result_ip = separator.join(str(i) for i in ip_list)
-
-        return result_ip
+            items[i] = 0
+    return ".".join(str(i) for i in items)
 
 
 def enumerate_ips(start_ip, n):
@@ -166,56 +153,63 @@ def enumerate_ips(start_ip, n):
     >>> len(list(enumerate_ips('8.8.8.8', 100000)))
     100000
     '''
-    for start_ip in enumerate_ips:
-        list_ips += start_ip.append(increment_ip)
+    start_ip = start_ip
+    current = start_ip
+    result_ip = [start_ip]
 
-    list_ips.append
+    for n in range(n-1):
+        current = increment_ip(current)
+        result_ip.append(current)
 
-    return list(enumerate_ips(start_ip, n))
+    return result_ip
 
 
-########################################
-# FIXME 1:
-# Create a list of all the IP addresses assigned to the DPRK.
-# Recall that the DPRK is assigned all IP addresses in the range from `175.45.176.0` to `175.45.179.255` (1024 IPs in total).
-# You should use your `enumerate_ips` function that you created above.
-########################################
-dprk_ips = []
-dprk_ips = list(enumerate_ips('175.45.176.0', 1024))
+if __name__ == '__main__':
+    ########################################
+    # FIXME 1:
+    # Create a list of all the IP addresses assigned to the DPRK.
+    # Recall that the DPRK is assigned all IP addresses in the range from `175.45.176.0` to `175.45.179.255` (1024 IPs in total).
+    # You should use your `enumerate_ips` function that you created above.
+    ########################################
+    dprk_ips = list(enumerate_ips('175.45.176.0', 1024))
 
-########################################
-# FIXME 2:
-# Filter the `dprk_ips` list you created above so that it contains only the IPs that have a web server.
-# Use the accumulator pattern and your `is_server_at_hostname` function.
-#
-# HINT:
-# Your for loop will take a LONG time to run.
-# There are 1024 IPs that you must scan,
-# and you're waiting up to 5 seconds for each.
-# That means you're code will take up to 1024*5/60 = 85 minutes to run.
-# You should output some debugging messages to let you know which ip address you are currently scanning.
-# Also, if you haven't watched the WarGames movie yet,
-# I recommend watching it while you're code is running :)
-#
-# In "real" war dialing code,
-# all of these connections are done in parallel,
-# and so the scan of all 1024 IPs can be completed in just seconds.
-# An ordinary laptop and internet connection can scan the entire internet (4.2 billion IPs) in under an hour.
-# Parallel programming is quite hard, however,
-# so we're just doing the slow and sequential version in this lab.
-# If you go on to take the CS46 class (data structures) next semester,
-# you'll learn how to write this parallel code.
-########################################
-dprk_ips_with_servers = []
-for i in dprk_ips_with_servers:
-    r = requests.get(i, timeout=5)
+    ########################################
+    # FIXME 2:
+    # Filter the `dprk_ips` list you created above so that it contains only the IPs that have a web server.
+    # Use the accumulator pattern and your `is_server_at_hostname` function.
+    #
+    # HINT:
+    # Your for loop will take a LONG time to run.
+    # There are 1024 IPs that you must scan,
+    # and you're waiting up to 5 seconds for each.
+    # That means you're code will take up to 1024*5/60 = 85 minutes to run.
+    # You should output some debugging messages to let you know which ip address you are currently scanning.
+    # Also, if you haven't watched the WarGames movie yet,
+    # I recommend watching it while you're code is running :)
+    #
+    # In "real" war dialing code,
+    # all of these connections are done in parallel,
+    # and so the scan of all 1024 IPs can be completed in just seconds.
+    # An ordinary laptop and internet connection can scan the entire internet (4.2 billion IPs) in under an hour.
+    # Parallel programming is quite hard, however,
+    # so we're just doing the slow and sequential version in this lab.
+    # If you go on to take the CS46 class (data structures) next semester,
+    # you'll learn how to write this parallel code.
+    ########################################
+    dprk_ips_with_servers = []
 
-########################################
-# Once you've completed the tasks above,
-# the following code should output the list of IP addresses.
-# You don't have to modify anything here.
-########################################
-print('dprk_ips_with_servers=', dprk_ips_with_servers)
+    for ip in dprk_ips:
+        print("Scanning:", ip)
+        if is_server_at_hostname(ip):
+            dprk_ips_with_servers.append(ip)
+
+
+    ########################################
+    # Once you've completed the tasks above,
+    # the following code should output the list of IP addresses.
+    # You don't have to modify anything here.
+    ########################################
+    print('dprk_ips_with_servers=', dprk_ips_with_servers)
 
 ########################################
 # FIXME 3:
