@@ -84,7 +84,10 @@ def is_server_at_hostname(hostname):
     try:
         url = "http://" + hostname.lower()
         requests.get(url, timeout=5)
-        return True
+        if r.status_code < 400:
+            return True
+        else:
+            return False
     except:
         return False
 
@@ -144,11 +147,10 @@ def enumerate_ips(start_ip, n):
     >>> len(list(enumerate_ips('8.8.8.8', 100000)))
     100000
     '''
-    start_ip = start_ip
     current = start_ip
     result_ip = [start_ip]
 
-    for n in range(n-1):
+    for i in range(n-1):
         current = increment_ip(current)
         result_ip.append(current)
 
