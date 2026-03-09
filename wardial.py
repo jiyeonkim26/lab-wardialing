@@ -192,6 +192,7 @@ if __name__ == '__main__':
         print("Scanning:", ip)
         if is_server_at_hostname(ip):
             dprk_ips_with_servers.append(ip)
+            print('dprk_ips_with_servers=', dprk_ips_with_servers)
 
 
 ########################################
