@@ -82,20 +82,11 @@ def is_server_at_hostname(hostname):
     5 seconds is a reasonable tradeoff between these extremes.
     '''
     try:
-        r = requests.get('http://' + hostname, timeout=5)
-        if r.status_code < 400:
-            return True
-    except requests.exceptions.SSLError:
-        r = requests.get('https://' + hostname, timeout=5)
-        if r.status_code < 400:
-            return True
-    except requests.exceptions.ConnectionError:
-        return False
-    except requests.exceptions.ConnectTimeout:
-        return False
+        url = "http://" + hostname.lower()
+        requests.get(url, timeout=5)
+        return True
     except:
         return False
-    return False
 
 
 def increment_ip(ip):
@@ -164,13 +155,14 @@ def enumerate_ips(start_ip, n):
     return result_ip
 
 
-if __name__ == '__main__':
     ########################################
     # FIXME 1:
     # Create a list of all the IP addresses assigned to the DPRK.
     # Recall that the DPRK is assigned all IP addresses in the range from `175.45.176.0` to `175.45.179.255` (1024 IPs in total).
     # You should use your `enumerate_ips` function that you created above.
     ########################################
+dprk_ips = []
+if __name__ == '__main__':
     dprk_ips = list(enumerate_ips('175.45.176.0', 1024))
 
     ########################################
