@@ -82,18 +82,11 @@ def is_server_at_hostname(hostname):
     5 seconds is a reasonable tradeoff between these extremes.
     '''
     try:
-        r = requests.get('http://' + hostname.lower(), timeout=5)
-        if r.status_code < 400:
-            return True
-    except:
-        pass
-    try:
-        r = requests.get('https://' + hostname.lower(), timeout=5, allow_redirects=False)
-        if 200 <= r.status_code < 300:
-            return True
-    except:
-        pass
-    return False
+        url = "http://" + hostname.lower()
+        requests.get(url, timeout=5)
+        return True
+    except requests.exceptions.RequestException:
+        return False
 
 
 def increment_ip(ip):
