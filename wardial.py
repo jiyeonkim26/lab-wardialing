@@ -146,6 +146,7 @@ def enumerate_ips(start_ip, n):
     '''
     current = start_ip
     result_ip = [start_ip]
+    print(result_ip)
 
     for i in range(n-1):
         current = increment_ip(current)
@@ -160,33 +161,32 @@ def enumerate_ips(start_ip, n):
     # Recall that the DPRK is assigned all IP addresses in the range from `175.45.176.0` to `175.45.179.255` (1024 IPs in total).
     # You should use your `enumerate_ips` function that you created above.
     ########################################
-dprk_ips = []
 if __name__ == '__main__':
     dprk_ips = list(enumerate_ips('175.45.176.0', 1024))
 
-    ########################################
-    # FIXME 2:
-    # Filter the `dprk_ips` list you created above so that it contains only the IPs that have a web server.
-    # Use the accumulator pattern and your `is_server_at_hostname` function.
-    #
-    # HINT:
-    # Your for loop will take a LONG time to run.
-    # There are 1024 IPs that you must scan,
-    # and you're waiting up to 5 seconds for each.
-    # That means you're code will take up to 1024*5/60 = 85 minutes to run.
-    # You should output some debugging messages to let you know which ip address you are currently scanning.
-    # Also, if you haven't watched the WarGames movie yet,
-    # I recommend watching it while you're code is running :)
-    #
-    # In "real" war dialing code,
-    # all of these connections are done in parallel,
-    # and so the scan of all 1024 IPs can be completed in just seconds.
-    # An ordinary laptop and internet connection can scan the entire internet (4.2 billion IPs) in under an hour.
-    # Parallel programming is quite hard, however,
-    # so we're just doing the slow and sequential version in this lab.
-    # If you go on to take the CS46 class (data structures) next semester,
-    # you'll learn how to write this parallel code.
-    ########################################
+########################################
+# FIXME 2:
+# Filter the `dprk_ips` list you created above so that it contains only the IPs that have a web server.
+# Use the accumulator pattern and your `is_server_at_hostname` function.
+#
+# HINT:
+# Your for loop will take a LONG time to run.
+# There are 1024 IPs that you must scan,
+# and you're waiting up to 5 seconds for each.
+# That means you're code will take up to 1024*5/60 = 85 minutes to run.
+# You should output some debugging messages to let you know which ip address you are currently scanning.
+# Also, if you haven't watched the WarGames movie yet,
+# I recommend watching it while you're code is running :)
+#
+# In "real" war dialing code,
+# all of these connections are done in parallel,
+# and so the scan of all 1024 IPs can be completed in just seconds.
+# An ordinary laptop and internet connection can scan the entire internet (4.2 billion IPs) in under an hour.
+# Parallel programming is quite hard, however,
+# so we're just doing the slow and sequential version in this lab.
+# If you go on to take the CS46 class (data structures) next semester,
+# you'll learn how to write this parallel code.
+########################################
     dprk_ips_with_servers = []
 
     for ip in dprk_ips:
@@ -195,11 +195,11 @@ if __name__ == '__main__':
             dprk_ips_with_servers.append(ip)
 
 
-    ########################################
-    # Once you've completed the tasks above,
-    # the following code should output the list of IP addresses.
-    # You don't have to modify anything here.
-    ########################################
+########################################
+# Once you've completed the tasks above,
+# the following code should output the list of IP addresses.
+# You don't have to modify anything here.
+########################################
     print('dprk_ips_with_servers=', dprk_ips_with_servers)
 
 ########################################
